@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ product.name }} - Hop & Barley</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; max-width: 800px; }
+        .product-detail { border: 1px solid #ddd; padding: 20px; border-radius: 8px; }
+        .product-price { color: green; font-weight: bold; font-size: 1.5em; }
+        .product-stock { font-size: 1.1em; margin: 10px 0; }
+        .in-stock { color: green; }
+        .out-of-stock { color: red; }
+        .back-link { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333; }
+        .back-link:hover { text-decoration: underline; }
+        .add-to-cart-form { margin: 20px 0; }
+        .quantity-input { width: 60px; padding: 5px; }
+        .add-to-cart-btn {
+            padding: 8px 16px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .add-to-cart-btn:hover { background: #45a049; }
+    </style>
+</head>
+<body>
+    <a href="{% url 'products:product_list' %}" class="back-link">← Назад к каталогу</a>
+
+    <div class="product-detail">
+        <h1>{{ product.name }}</h1>
+
+        {% if product.category %}
+        <p><strong>Категория:</strong> {{ product.category.name }}</p>
+        {% endif %}
+
+        <p><strong>Описание:</strong> {{ product.description }}</p>
+
+        <p class="product-price">{{ product.price }} руб.</p>
+
+        <p class="product-stock {% if product.stock > 0 %}in-stock{% else %}out-of-stock{% endif %}">
+            {% if product.stock > 0 %}
+            ✅ В наличии: {{ product.stock }} шт.
+            {% else %}
+            ❌ Нет в наличии
+            {% endif %}
+        </p>
+
+        {% if product.stock > 0 %}
+        <div class="add-to-cart-form">
+            <form method="post" action="#">
+                {% csrf_token %}
+                <label for="quantity"><strong>Количество:</strong></label>
+                <input type="number" id="quantity" name="quantity"
+                       value="1" min="1" max="{{ product.stock }}"
+                       class="quantity-input">
+                <button type="submit" class="add-to-cart-btn">
+                    Добавить в корзину
+                </button>
+            </form>
+        </div>
+        {% endif %}
+
+        <hr>
+        <p><small>ID товара: {{ product.id }}</small></p>
+        {% if product.created_at %}
+        <p><small>Добавлен: {{ product.created_at|date:"d.m.Y" }}</small></p>
+        {% endif %}
+    </div>
+</body>
+</html>
