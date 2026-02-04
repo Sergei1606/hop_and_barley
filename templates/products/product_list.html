@@ -1,62 +1,59 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Hop & Barley - Каталог товаров</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .products { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .product-card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; }
-        .product-price { color: green; font-weight: bold; font-size: 1.2em; }
-        .product-stock { color: #666; }
-        .in-stock { color: green; }
-        .out-of-stock { color: red; }
-    </style>
-</head>
-<body>
-    <h1>Каталог товаров</h1>
+{% extends 'base.html' %}
 
-    <div>
-        <form method="get">
-            <input type="text" name="search" placeholder="Поиск товаров..."
-                   value="{{ request.GET.search }}">
-            <button type="submit">Искать</button>
-        </form>
-    </div>
+{% block title %}Каталог товаров - Hop & Barley{% endblock %}
 
-    <div class="products">
-        {% for product in products %}
-        <div class="product-card">
-            <h3><a href="{% url 'products:product_detail' product.slug %}">{{ product.name }}</a></h3>
-            <p>{{ product.description|truncatechars:100 }}</p>
-            <p class="product-price">{{ product.price }} руб.</p>
-            <p class="product-stock {% if product.stock > 0 %}in-stock{% else %}out-of-stock{% endif %}">
-                {% if product.stock > 0 %}
-                В наличии: {{ product.stock }} шт.
-                {% else %}
-                Нет в наличии
-                {% endif %}
-            </p>
-            {% if product.category %}
-            <p>Категория: {{ product.category.name }}</p>
+{% block content %}
+<div style="margin-bottom: 20px;">
+    <form method="get">
+        <input type="text" name="search" placeholder="Поиск товаров..."
+               value="{{ request.GET.search }}">
+        <button type="submit">Искать</button>
+    </form>
+</div>
+
+<div class="products">
+    {% for product in products %}
+    <div class="product-card">
+        <h3><a href="{% url 'products:product_detail' product.slug %}">{{ product.name }}</a></h3>
+        <p>{{ product.description|truncatechars:100 }}</p>
+        <p class="product-price">{{ product.price }} руб.</p>
+        <p class="product-stock {% if product.stock > 0 %}in-stock{% else %}out-of-stock{% endif %}">
+            {% if product.stock > 0 %}
+            В наличии: {{ product.stock }} шт.
+            {% else %}
+            Нет в наличии
             {% endif %}
-        </div>
-        {% empty %}
-        <p>Товары не найдены.</p>
-        {% endfor %}
-    </div>
-
-    {% if is_paginated %}
-    <div class="pagination">
-        {% if page_obj.has_previous %}
-            <a href="?page={{ page_obj.previous_page_number }}">Назад</a>
-        {% endif %}
-
-        <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
-
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">Вперед</a>
+        </p>
+        {% if product.category %}
+        <p>Категория: {{ product.category.name }}</p>
         {% endif %}
     </div>
+    {% empty %}
+    <p>Товары не найдены.</p>
+    {% endfor %}
+</div>
+
+{% if is_paginated %}
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">Назад</a>
     {% endif %}
-</body>
-</html>
+
+    <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Вперед</a>
+    {% endif %}
+</div>
+{% endif %}
+
+<style>
+    .products { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .product-card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; }
+    .product-price { color: green; font-weight: bold; font-size: 1.2em; }
+    .product-stock { color: #666; }
+    .in-stock { color: green; }
+    .out-of-stock { color: red; }
+    .pagination { margin-top: 20px; text-align: center; }
+</style>
+{% endblock %}

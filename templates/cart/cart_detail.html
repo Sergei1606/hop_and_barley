@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Корзина - Hop & Barley{% endblock %}
+
+{% block content %}
+<h1>🛒 Ваша корзина</h1>
+
+<div class="cart-container">
+    {% if cart.get_total_items > 0 %}
+        {% for item in cart.get_items %}
+        <div class="cart-item">
+            <div class="item-info">
+                <h3>{{ item.product.name }}</h3>
+                <p>{{ item.product.description|truncatechars:100 }}</p>
+            </div>
+
+            <div class="item-price">
+                {{ item.price }} руб. ×
+            </div>
+
+            <div class="quantity-control">
+                <span>{{ item.quantity }} шт.</span>
+            </div>
+
+            <div class="item-total">
+                {{ item.total_price }} руб.
+            </div>
+
+            <a href="{% url 'cart:remove_from_cart' item.product.id %}"
+               class="remove-btn"
+               onclick="return confirm('Удалить товар из корзины?')">
+                Удалить
+            </a>
+        </div>
+        {% endfor %}
+
+        <div class="cart-summary">
+            <h3>Итого: {{ cart.get_total_price }} руб.</h3>
+            <p>Товаров: {{ cart.get_total_items }} шт.</p>
+        </div>
+
+        <div class="cart-actions">
+            <a href="{% url 'products:product_list' %}" class="btn btn-secondary">
+                ← Продолжить покупки
+            </a>
+            <a href="{% url 'cart:clear_cart' %}" class="btn btn-secondary"
+               onclick="return confirm('Очистить всю корзину?')">
+                Очистить корзину
+            </a>
+            <a href="#" class="btn btn-primary">
+                Оформить заказ →
+            </a>
+        </div>
+    {% else %}
+        <div class="empty-cart">
+            <h2>Корзина пуста</h2>
+            <p>Добавьте товары из каталога</p>
+            <a href="{% url 'products:product_list' %}" class="btn btn-primary">
+                Перейти к покупкам
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .cart-container { border: 1px solid #ddd; padding: 20px; border-radius: 8px; }
+    .cart-item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
+    .cart-item:last-child { border-bottom: none; }
+    .item-info { flex: 1; }
+    .item-price { font-weight: bold; color: green; margin-right: 20px; }
+    .item-total { font-weight: bold; color: #333; }
+    .quantity-control { display: flex; align-items: center; gap: 10px; }
+    .quantity-input { width: 60px; padding: 5px; }
+    .remove-btn { color: #ff4444; text-decoration: none; margin-left: 20px; }
+    .remove-btn:hover { text-decoration: underline; }
+    .cart-summary { margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 4px; }
+    .cart-actions { margin-top: 20px; }
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-primary { background: #4CAF50; color: white; }
+    .btn-primary:hover { background: #45a049; }
+    .btn-secondary { background: #ddd; color: #333; }
+    .btn-secondary:hover { background: #ccc; }
+    .empty-cart { text-align: center; padding: 40px; color: #666; }
+</style>
+{% endblock %}

@@ -5,6 +5,7 @@ description = "Интернет-магазин крафтового пива Hop
 authors = ["Sergei1606 <Sergei1606@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.11"
