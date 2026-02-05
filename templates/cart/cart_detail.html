@@ -3,6 +3,17 @@
 {% block title %}Корзина - Hop & Barley{% endblock %}
 
 {% block content %}
+{% if not user.is_authenticated and cart.get_total_items > 0 %}
+<div class="auth-warning" style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+    <p>⚠️ Для оформления заказа рекомендуется
+       <a href="/admin/login/?next={% url 'cart:cart_detail' %}" style="color: #d35400; font-weight: bold;">
+           войти в систему
+       </a>.
+       Или можете оформить заказ как гость.
+    </p>
+</div>
+{% endif %}
+
 <h1>🛒 Ваша корзина</h1>
 
 <div class="cart-container">
@@ -47,7 +58,7 @@
                onclick="return confirm('Очистить всю корзину?')">
                 Очистить корзину
             </a>
-            <a href="#" class="btn btn-primary">
+            <a href="{% url 'orders:order_create' %}" class="btn btn-primary">
                 Оформить заказ →
             </a>
         </div>
