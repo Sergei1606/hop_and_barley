@@ -14,7 +14,7 @@ from .forms import (
     ProfileUpdateForm,
     DeliveryAddressForm
 )
-# from orders.models import Order
+from orders.models import Order
 from .models import DeliveryAddress
 
 
@@ -69,9 +69,7 @@ def logout_view(request):
 @login_required
 def profile(request):
     user = request.user
-    # orders = Order.objects.filter(user=user).order_by('-created_at')[:5]
-    # Временно пустой список заказов
-    orders = []
+    orders = Order.objects.filter(user=user).order_by('-created_at')[:5]
 
     if request.method == 'POST':
         user_form = UserUpdateForm(request.POST, instance=user)
@@ -101,19 +99,17 @@ def profile(request):
 
 @login_required
 def order_history(request):
-    # orders = Order.objects.filter(user=request.user).order_by('-created_at')
-    # Временно возвращаем пустой список
-    orders = []
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'users/order_history.html', {'orders': orders})
 
 
 @login_required
 def order_detail(request, order_id):
-    # order = Order.objects.get(id=order_id, user=request.user)
-    # return render(request, 'users/order_detail.html', {'order': order})
+    order = Order.objects.get(id=order_id, user=request.user)
+    return render(request, 'users/order_detail.html', {'order': order})
     # Временно редирект или сообщение
-    messages.info(request, 'История заказов временно недоступна')
-    return redirect('users:profile')
+    # messages.info(request, 'История заказов временно недоступна')
+    # return redirect('users:profile')
 
 
 @login_required
