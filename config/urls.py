@@ -21,7 +21,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('products.urls')),  # Главная страница - каталог
+    path('', include('products.urls')),
     path('cart/', include('cart.urls')),
-    path('order/', include('orders.urls')),
+    path('order/', include('orders.urls')),    # из feature/checkout
+    path('users/', include('users.urls')),     # из feature/user-account
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
