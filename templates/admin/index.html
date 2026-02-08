@@ -1,0 +1,345 @@
+<!-- templates/admin/index.html - ИСПРАВЛЕННАЯ ВЕРСИЯ -->
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+    /* Стили для dashboard с !important */
+    .dashboard {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+        gap: 20px !important;
+        margin-bottom: 30px !important;
+    }
+
+    .card {
+        background: white !important;
+        border-radius: 8px !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+        padding: 20px !important;
+        transition: transform 0.2s !important;
+        border: 1px solid #ddd !important;
+        margin-bottom: 0 !important;
+    }
+
+    .card:hover {
+        transform: translateY(-5px) !important;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15) !important;
+    }
+
+    .card h3 {
+        margin-top: 0 !important;
+        color: #333 !important;
+        border-bottom: 2px solid #4CAF50 !important;
+        padding-bottom: 10px !important;
+        margin-bottom: 15px !important;
+        font-size: 1.2em !important;
+    }
+
+    .metric {
+        font-size: 2.5em !important;
+        font-weight: bold !important;
+        color: #2c3e50 !important;
+        margin: 10px 0 !important;
+    }
+
+    .metric-label {
+        color: #7f8c8d !important;
+        font-size: 0.9em !important;
+        text-transform: uppercase !important;
+    }
+
+    .metric-green { color: #27ae60 !important; }
+    .metric-blue { color: #2980b9 !important; }
+    .metric-orange { color: #e67e22 !important; }
+    .metric-red { color: #e74c3c !important; }
+
+    .stats-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+        margin-top: 15px !important;
+    }
+
+    .stat-item {
+        text-align: center !important;
+        padding: 10px !important;
+        background: #f8f9fa !important;
+        border-radius: 5px !important;
+    }
+
+    .stat-value {
+        font-size: 1.5em !important;
+        font-weight: bold !important;
+        display: block !important;
+    }
+
+    .stat-label {
+        font-size: 0.8em !important;
+        color: #6c757d !important;
+        display: block !important;
+    }
+
+    .table-dashboard {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        margin-top: 15px !important;
+    }
+
+    .table-dashboard th {
+        background: #f1f8ff !important;
+        text-align: left !important;
+        padding: 10px !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid #dee2e6 !important;
+    }
+
+    .table-dashboard td {
+        padding: 10px !important;
+        border-bottom: 1px solid #eee !important;
+    }
+
+    .badge {
+        display: inline-block !important;
+        padding: 3px 8px !important;
+        border-radius: 12px !important;
+        font-size: 0.8em !important;
+        font-weight: bold !important;
+    }
+
+    .badge-pending { background: #fff3cd !important; color: #856404 !important; }
+    .badge-paid { background: #d1ecf1 !important; color: #0c5460 !important; }
+    .badge-shipped { background: #d4edda !important; color: #155724 !important; }
+    .badge-delivered { background: #c3e6cb !important; color: #155724 !important; }
+    .badge-red { background: #f8d7da !important; color: #721c24 !important; }
+
+    .quick-links {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+        margin-top: 20px !important;
+        padding-top: 20px !important;
+        border-top: 1px solid #dee2e6 !important;
+    }
+
+    .quick-link {
+        display: inline-block !important;
+        padding: 8px 15px !important;
+        background: #4CAF50 !important;
+        color: white !important;
+        text-decoration: none !important;
+        border-radius: 5px !important;
+        font-size: 0.9em !important;
+    }
+
+    .quick-link:hover {
+        background: #45a049 !important;
+        text-decoration: none !important;
+        color: white !important;
+    }
+
+    .status-item {
+        display: flex !important;
+        justify-content: space-between !important;
+        padding: 8px 0 !important;
+        border-bottom: 1px solid #eee !important;
+    }
+
+    .status-color {
+        width: 12px !important;
+        height: 12px !important;
+        border-radius: 50% !important;
+        display: inline-block !important;
+        margin-right: 8px !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <!-- Карточка 1: Общая статистика -->
+    <div class="card">
+        <h3>📊 Общая статистика</h3>
+
+        <!-- Вариант 1: Если finance_stats существует -->
+        {% if finance_stats %}
+        <div class="metric metric-green">{{ finance_stats.total_revenue|default:"0" }} ₽</div>
+        {% else %}
+        <!-- Вариант 2: Если total_revenue существует -->
+        <div class="metric metric-green">{{ total_revenue|default:"0" }} ₽</div>
+        {% endif %}
+
+        <div class="metric-label">Общая выручка</div>
+
+        <div class="stats-grid">
+            <div class="stat-item">
+                {% if order_stats %}
+                <div class="stat-value">{{ order_stats.total|default:"0" }}</div>
+                {% else %}
+                <div class="stat-value">{{ total_orders|default:"0" }}</div>
+                {% endif %}
+                <div class="stat-label">Всего заказов</div>
+            </div>
+
+            <div class="stat-item">
+                {% if product_stats %}
+                <div class="stat-value">{{ product_stats.total|default:"0" }}</div>
+                {% else %}
+                <div class="stat-value">{{ total_products|default:"0" }}</div>
+                {% endif %}
+                <div class="stat-label">Товаров</div>
+            </div>
+
+            <div class="stat-item">
+                {% if user_stats %}
+                <div class="stat-value">{{ user_stats.total|default:"0" }}</div>
+                {% else %}
+                <div class="stat-value">{{ total_users|default:"0" }}</div>
+                {% endif %}
+                <div class="stat-label">Пользователей</div>
+            </div>
+
+            <div class="stat-item">
+                {% if finance_stats %}
+                <div class="stat-value">{{ finance_stats.avg_order|default:"0"|floatformat:2 }} ₽</div>
+                {% else %}
+                <div class="stat-value">{{ avg_order_value|default:"0"|floatformat:2 }} ₽</div>
+                {% endif %}
+                <div class="stat-label">Средний чек</div>
+            </div>
+        </div>
+
+        {% if finance_stats and finance_stats.today_orders > 0 %}
+        <div style="margin-top: 15px; font-size: 0.9em; color: #666;">
+            📅 Сегодня: {{ finance_stats.today_orders }} заказов на {{ finance_stats.today_revenue }} ₽
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Карточка 2: Статусы заказов -->
+    <div class="card">
+        <h3>📦 Статусы заказов</h3>
+
+        {% if order_stats and order_stats.by_status %}
+            <!-- Ваш формат статусов -->
+            {% for status in order_stats.by_status %}
+            <div class="status-item">
+                <div>
+                    <span class="status-color" style="background-color: {{ status.color }};"></span>
+                    {{ status.status_display }}
+                </div>
+                <strong>{{ status.count }}</strong>
+            </div>
+            {% endfor %}
+        {% else %}
+            <!-- Мой формат статусов -->
+            <table class="table-dashboard">
+                <tr>
+                    <td>Ожидают обработки</td>
+                    <td><span class="badge badge-pending">{{ pending_orders|default:"0" }}</span></td>
+                </tr>
+                <tr>
+                    <td>Оплачены</td>
+                    <td><span class="badge badge-paid">{{ paid_orders|default:"0" }}</span></td>
+                </tr>
+                <tr>
+                    <td>Отправлены</td>
+                    <td><span class="badge badge-shipped">{{ shipped_orders|default:"0" }}</span></td>
+                </tr>
+                <tr>
+                    <td>Доставлены</td>
+                    <td><span class="badge badge-delivered">{{ delivered_orders|default:"0" }}</span></td>
+                </tr>
+                <tr>
+                    <td>Отменены</td>
+                    <td><span class="badge badge-red">{{ cancelled_orders|default:"0" }}</span></td>
+                </tr>
+            </table>
+        {% endif %}
+    </div>
+
+    <!-- Карточка 3: Последние заказы -->
+    <div class="card">
+        <h3>🆕 Последние заказы</h3>
+        {% if recent_orders %}
+        <table class="table-dashboard">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Пользователь</th>
+                    <th>Сумма</th>
+                    <th>Статус</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in recent_orders %}
+                <tr>
+                    <td><a href="/admin/orders/order/{{ order.id }}/change/">#{{ order.id }}</a></td>
+                    <td>{{ order.user.email|truncatechars:20 }}</td>
+                    <td>{{ order.total_price }} ₽</td>
+                    <td>
+                        {% if order.status == 'pending' %}
+                            <span class="badge badge-pending">Ожидает</span>
+                        {% elif order.status == 'paid' %}
+                            <span class="badge badge-paid">Оплачен</span>
+                        {% elif order.status == 'shipped' %}
+                            <span class="badge badge-shipped">Отправлен</span>
+                        {% elif order.status == 'delivered' %}
+                            <span class="badge badge-delivered">Доставлен</span>
+                        {% else %}
+                            <span class="badge badge-red">Отменен</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Нет заказов</p>
+        {% endif %}
+    </div>
+
+    <!-- Карточка 4: Популярные товары -->
+    <div class="card">
+        <h3>🔥 Популярные товары</h3>
+        {% if popular_products %}
+        <table class="table-dashboard">
+            <thead>
+                <tr>
+                    <th>Товар</th>
+                    <th>Продано</th>
+                    <th>Выручка</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in popular_products %}
+                <tr>
+                    <td>{{ product.name|truncatechars:25 }}</td>
+                    <td>{{ product.total_sold|default:"0" }} шт.</td>
+                    <td>{{ product.total_revenue|default:"0" }} ₽</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Нет данных о продажах</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Быстрые ссылки -->
+<div class="quick-links">
+    <a href="/admin/products/product/" class="quick-link">➕ Добавить товар</a>
+    <a href="/admin/orders/order/" class="quick-link">📦 Все заказы</a>
+    <a href="/admin/products/category/" class="quick-link">📂 Категории</a>
+    <a href="/admin/auth/user/" class="quick-link">👥 Пользователи</a>
+    <a href="/admin/orders/order/add/" class="quick-link">🛒 Создать заказ</a>
+</div>
+
+<!-- Стандартные модули Django -->
+{{ block.super }}
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
