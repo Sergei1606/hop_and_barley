@@ -21,8 +21,18 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # API URLs (ДОБАВЬТЕ ЭТУ СТРОКУ)
+    path('api/', include('api.urls')),
+
+    # Веб-интерфейс
     path('', include('products.urls')),
     path('cart/', include('cart.urls')),
-    path('order/', include('orders.urls')),    # из feature/checkout
-    path('users/', include('users.urls')),     # из feature/user-account
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('order/', include('orders.urls')),  # из feature/checkout
+    path('users/', include('users.urls')),  # из feature/user-account
+]
+
+# Для отдачи медиафайлов в разработке
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
