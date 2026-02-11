@@ -1,52 +1,84 @@
-﻿<!DOCTYPE html>
 {% extends 'base.html' %}
-{% load static %}
 
-{% block title %}егистрация - Hop & Barley{% endblock %}
+{% block title %}Регистрация - Hop & Barley{% endblock %}
 
 {% block content %}
-<div style="max-width: 400px; margin: 50px auto; padding: 30px; background: white; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
-    <h2 style="text-align: center; margin-bottom: 30px; color: #333;">егистрация</h2>
-    
-    <div style="margin-bottom: 15px;">
-        <label style="display: block; margin-bottom: 8px; font-weight: 500;">мя</label>
-        <input type="text" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box;">
-    </div>
-    
-    <div style="margin-bottom: 15px;">
-        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Email</label>
-        <input type="email" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box;">
-    </div>
-    
-    <div style="margin-bottom: 20px;">
-        <label style="display: block; margin-bottom: 8px; font-weight: 500;">ароль</label>
-        <input type="password" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box;">
-    </div>
-    
-    <button style="width: 100%; padding: 14px; background: #4CAF50; color: white; border: none; border-radius: 6px; font-size: 1.1em; cursor: pointer; margin-bottom: 20px;">
-        арегистрироваться
-    </button>
-    
-    <div style="text-align: center; margin-top: 20px;">
-        <p style="color: #666; font-size: 0.9em;">
-            же есть аккаунт? <a href="/users/login/" style="color: #4CAF50; text-decoration: none;">ойти</a>
-        </p>
-        <p style="color: #666; font-size: 0.9em; margin-top: 10px;">
-            <a href="/" style="color: #666; text-decoration: none;">← ернуться на главную</a>
-        </p>
+<div class="auth-container" style="max-width: 500px; margin: 40px auto;">
+    <h2>📝 Регистрация</h2>
+
+    <form method="post" class="auth-form">
+        {% csrf_token %}
+
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+            <div class="error-message">
+                {% for error in field.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% if field.help_text %}
+            <small class="help-text">{{ field.help_text }}</small>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+        </div>
+    </form>
+
+    <div class="auth-links" style="margin-top: 20px; text-align: center;">
+        <p>Уже есть аккаунт? <a href="{% url 'users:login' %}">Войдите</a></p>
+        <p><a href="{% url 'products:product_list' %}">← Вернуться на главную</a></p>
     </div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('button');
-    if (form) {
-        form.addEventListener('click', function() {
-            alert('егистрация (заглушка)');
-            return false;
-        });
+<style>
+    .form-group {
+        margin-bottom: 20px;
     }
-});
-</script>
+    .form-input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        margin-top: 5px;
+    }
+    .form-input:focus {
+        border-color: #4CAF50;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    }
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        width: 100%;
+    }
+    .btn-primary {
+        background: #4CAF50;
+        color: white;
+    }
+    .btn-primary:hover {
+        background: #45a049;
+    }
+    .error-message {
+        color: #ff4444;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+    .help-text {
+        color: #666;
+        font-size: 14px;
+        margin-top: 5px;
+        display: block;
+    }
+</style>
 {% endblock %}
-

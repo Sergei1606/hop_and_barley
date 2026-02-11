@@ -1,56 +1,151 @@
-﻿<!DOCTYPE html>
 {% extends 'base.html' %}
-{% load static %}
 
-{% block title %}ой профиль - Hop & Barley{% endblock %}
+{% block title %}Мой профиль - Hop & Barley{% endblock %}
 
 {% block content %}
-<div style="max-width: 800px; margin: 0 auto; padding: 40px 20px;">
-    <h1 style="margin-bottom: 30px;">👤 ой профиль</h1>
-    
-    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 40px;">
-        <!-- оковая панель -->
-        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
-            <div style="text-align: center; margin-bottom: 20px;">
-                <div style="width: 80px; height: 80px; background: #4CAF50; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2em; margin: 0 auto 15px;">
-                    U
+<div class="profile-container" style="max-width: 900px; margin: 0 auto;">
+    <h1>👤 Мой профиль</h1>
+
+    <div style="display: flex; gap: 30px; margin-top: 20px;">
+        <!-- Левая колонка - информация профиля -->
+        <div style="flex: 1;">
+            <h2>Личная информация</h2>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <h3>Основные данные</h3>
+                {% for field in user_form %}
+                <div class="form-group">
+                    <label>{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <div class="error-message">{{ field.errors }}</div>
+                    {% endif %}
                 </div>
-                <h3 style="margin-bottom: 5px;">ользователь</h3>
-                <p style="color: #666; font-size: 0.9em;">user@example.com</p>
-            </div>
-            
-            <div style="margin-top: 20px;">
-                <a href="/orders/" style="display: block; padding: 12px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">
-                    📦 ои заказы
-                </a>
-                <a href="/users/profile/edit/" style="display: block; padding: 12px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">
-                    ⚙️ астройки
-                </a>
-                <a href="/users/logout/" style="display: block; padding: 12px; color: #333; text-decoration: none;">
-                    🚪 ыйти
-                </a>
-            </div>
+                {% endfor %}
+
+                <h3 style="margin-top: 30px;">Дополнительная информация</h3>
+                {% for field in profile_form %}
+                <div class="form-group">
+                    <label>{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <div class="error-message">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                    <a href="{% url 'users:change_password' %}" class="btn btn-secondary">Сменить пароль</a>
+                </div>
+            </form>
         </div>
-        
-        <!-- сновной контент -->
-        <div>
-            <h2 style="margin-bottom: 20px;">оследние заказы</h2>
-            <div style="background: white; border: 1px solid #eee; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <span style="font-weight: bold;">аказ #HB-2025-001</span>
-                    <span style="color: #4CAF50;">оставлен</span>
+
+        <!-- Правая колонка - заказы и меню -->
+        <div style="flex: 1;">
+            <div class="profile-actions" style="background: #f5f5f5; padding: 20px; border-radius: 8px;">
+                <h3>📋 Быстрые действия</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin: 10px 0;">
+                        <a href="{% url 'users:order_history' %}" class="btn btn-secondary" style="display: block; text-align: center;">
+                            📦 История заказов
+                        </a>
+                    </li>
+                    <li style="margin: 10px 0;">
+                        <a href="{% url 'users:addresses' %}" class="btn btn-secondary" style="display: block; text-align: center;">
+                            🏠 Мои адреса
+                        </a>
+                    </li>
+                    <li style="margin: 10px 0;">
+                        <a href="{% url 'products:product_list' %}" class="btn btn-secondary" style="display: block; text-align: center;">
+                            🛍️ Продолжить покупки
+                        </a>
+                    </li>
+                    <li style="margin: 10px 0;">
+                        <a href="{% url 'users:logout' %}" class="btn btn-secondary" style="display: block; text-align: center; background: #ff4444;">
+                            🚪 Выйти
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            {% if orders %}
+            <div class="recent-orders" style="margin-top: 30px;">
+                <h3>🕐 Последние заказы</h3>
+                {% for order in orders %}
+                <div class="order-item" style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <div>
+                            <strong>Заказ #{{ order.id }}</strong><br>
+                            <small>{{ order.created_at|date:"d.m.Y H:i" }}</small>
+                        </div>
+                        <div>
+                            <span style="color: green; font-weight: bold;">{{ order.total_price }} руб.</span><br>
+                            <span style="background: #e0e0e0; padding: 2px 8px; border-radius: 4px; font-size: 12px;">
+                                {{ order.get_status_display }}
+                            </span>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <a href="{% url 'users:order_detail' order.id %}" class="btn btn-secondary" style="padding: 5px 10px; font-size: 14px;">
+                            Подробнее →
+                        </a>
+                    </div>
                 </div>
-                <p style="color: #666; margin-bottom: 10px;">3 товара • 4 890 </p>
-                <p style="font-size: 0.9em; color: #999;">25 января 2025</p>
+                {% endfor %}
+
+                <div style="text-align: center; margin-top: 15px;">
+                    <a href="{% url 'users:order_history' %}" class="btn btn-secondary">
+                        Вся история заказов
+                    </a>
+                </div>
             </div>
-            
-            <div style="text-align: center; margin-top: 30px;">
-                <a href="/" style="display: inline-block; padding: 12px 24px; background: #f8f9fa; color: #333; text-decoration: none; border-radius: 6px;">
-                    ← а главную
-                </a>
-            </div>
+            {% endif %}
         </div>
     </div>
 </div>
-{% endblock %}
 
+<style>
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .form-input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        margin-right: 10px;
+    }
+    .btn-primary {
+        background: #4CAF50;
+        color: white;
+    }
+    .btn-primary:hover {
+        background: #45a049;
+    }
+    .btn-secondary {
+        background: #ddd;
+        color: #333;
+    }
+    .btn-secondary:hover {
+        background: #ccc;
+    }
+    .error-message {
+        color: #ff4444;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}
