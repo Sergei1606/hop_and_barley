@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Вход - Hop & Barley{% endblock %}
+
+{% block content %}
+<div class="auth-container" style="max-width: 500px; margin: 40px auto;">
+    <h2>🔐 Вход в аккаунт</h2>
+
+    <form method="post" class="auth-form">
+        {% csrf_token %}
+
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+            <div class="error-message">
+                {% for error in field.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Войти</button>
+        </div>
+
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
+    </form>
+
+    <div class="auth-links" style="margin-top: 20px; text-align: center;">
+        <p>Нет аккаунта? <a href="{% url 'users:register' %}">Зарегистрируйтесь</a></p>
+        <p>Или войдите через <a href="/admin/login/?next=/">админку</a></p>
+        <p><a href="{% url 'products:product_list' %}">← Вернуться на главную</a></p>
+    </div>
+</div>
+
+<style>
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        margin-top: 5px;
+    }
+    .form-input:focus {
+        border-color: #4CAF50;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    }
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        width: 100%;
+    }
+    .btn-primary {
+        background: #4CAF50;
+        color: white;
+    }
+    .btn-primary:hover {
+        background: #45a049;
+    }
+    .error-message {
+        color: #ff4444;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}

@@ -60,7 +60,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'cart.context_processors.cart', # Для корзины в шаблонах
+                'cart.context_processors.cart',
+                'config.context_processors.admin_stats',
             ],
         },
     },

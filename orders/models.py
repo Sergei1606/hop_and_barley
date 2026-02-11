@@ -1,7 +1,4 @@
 from django.db import models
-
-# Create your models here.
-from django.db import models
 from django.contrib.auth.models import User
 from products.models import Product
 from decimal import Decimal
@@ -48,7 +45,7 @@ class Order(models.Model):
         return f'Заказ #{self.id} - {self.user.username} - {self.total_price} руб.'
 
     def save(self, *args, **kwargs):
-        if not self.total_price:
+        if self.total_price is None:
             self.total_price = Decimal('0.00')
         super().save(*args, **kwargs)
 
@@ -80,4 +77,13 @@ class OrderItem(models.Model):
         return f'{self.product.name} x{self.quantity}'
 
     def get_total(self):
+        """Общая стоимость позиции"""
+        if self.price is None or self.quantity is None:
+            return Decimal('0.00')
         return self.price * self.quantity
+
+    def save(self, *args, **kwargs):
+        """Автоматически устанавливаем цену из товара если не указана"""
+        if self.price is None and self.product:
+            self.price = self.product.price
+        super().save(*args, **kwargs)
