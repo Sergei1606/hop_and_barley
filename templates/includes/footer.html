@@ -1,0 +1,239 @@
+﻿<!DOCTYPE html>
+{% load static %}
+<footer>
+    <div class="footer-container">
+        <!-- екоративное изображение -->
+        <div class="footer-decoration">
+            <img src="{% static 'img/background/image-footer.svg' %}" alt="Hop & Barley Hops" class="footer-hops">
+        </div>
+        
+        <!-- сновное содержимое футера -->
+        <div class="footer-content">
+            <!-- оготип и описание -->
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <img src="{% static 'img/logo.svg' %}" alt="Hop & Barley Logo" style="height: 40px;">
+                    <span class="logo-text">Hop & Barley</span>
+                </div>
+                <p class="footer-description">
+                    агазин качественных ингредиентов для домашнего пивоварения. 
+                    ы предлагаем лучшие сорта хмеля, солода и дрожжей.
+                </p>
+            </div>
+            
+            <!-- авигация в футере -->
+            <div class="footer-nav">
+                <div class="nav-column">
+                    <h4>агазин</h4>
+                    <ul>
+                        <li><a href="/products/">се товары</a></li>
+                        <li><a href="#">Хмель</a></li>
+                        <li><a href="#">Солод</a></li>
+                        <li><a href="#">рожжи</a></li>
+                        <li><a href="#">аборы</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-column">
+                    <h4>омощь</h4>
+                    <ul>
+                        <li><a href="#">оставка и оплата</a></li>
+                        <li><a href="#">озврат товара</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">онтакты</a></li>
+                        <li><a href="#"> нас</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-column">
+                    <h4>есурсы</h4>
+                    <ul>
+                        <li><a href="#">ецепты</a></li>
+                        <li><a href="#">лог</a></li>
+                        <li><a href="#">орум</a></li>
+                        <li><a href="#">идео-уроки</a></li>
+                        <li><a href="#">Сообщество</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- онтактная информация -->
+            <div class="footer-contact">
+                <h4>онтакты</h4>
+                <ul>
+                    <li><i class="fas fa-envelope"></i> info@hopbarley.ru</li>
+                    <li><i class="fas fa-phone"></i> +7 (999) 123-45-67</li>
+                    <li><i class="fas fa-map-marker-alt"></i> осква, ул. ивоваров, 15</li>
+                    <li><i class="fas fa-clock"></i> н-т: 10:00-20:00, Сб-с: 11:00-18:00</li>
+                </ul>
+                
+                <!-- Социальные сети -->
+                <div class="social-links">
+                    <a href="#" class="social-icon" aria-label="VKontakte"><i class="fab fa-vk"></i></a>
+                    <a href="#" class="social-icon" aria-label="Telegram"><i class="fab fa-telegram"></i></a>
+                    <a href="#" class="social-icon" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- опирайт -->
+        <div class="footer-bottom">
+            <div class="copyright">
+                <p>&copy; 2024 Hop & Barley. се права защищены.</p>
+                <p class="legal-links">
+                    <a href="#">олитика конфиденциальности</a> | 
+                    <a href="#">ользовательское соглашение</a> | 
+                    <a href="#">арта сайта</a>
+                </p>
+            </div>
+            
+            <div class="payment-methods">
+                <span>ринимаем к оплате:</span>
+                <div class="payment-icons">
+                    <i class="fab fa-cc-visa" title="Visa"></i>
+                    <i class="fab fa-cc-mastercard" title="MasterCard"></i>
+                    <i class="fab fa-cc-paypal" title="PayPal"></i>
+                    <i class="fas fa-credit-card" title="анковские карты"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+/* Стили для футера */
+.footer-container {
+    background-color: #1a1a1a;
+    color: #fff;
+    padding: 40px 20px 20px;
+    margin-top: 60px;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.footer-brand .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.footer-brand .logo-text {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #fff;
+}
+
+.footer-description {
+    color: #aaa;
+    line-height: 1.6;
+    font-size: 0.9em;
+}
+
+.nav-column h4, .footer-contact h4 {
+    color: #fff;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+
+.nav-column ul, .footer-contact ul {
+    list-style: none;
+    padding: 0;
+}
+
+.nav-column li, .footer-contact li {
+    margin-bottom: 8px;
+}
+
+.nav-column a {
+    color: #aaa;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.nav-column a:hover {
+    color: #fff;
+}
+
+.footer-contact li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #aaa;
+}
+
+.footer-contact li i {
+    color: #4CAF50;
+    width: 20px;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.social-icon {
+    color: #aaa;
+    font-size: 1.2em;
+    transition: color 0.3s;
+}
+
+.social-icon:hover {
+    color: #fff;
+}
+
+.footer-bottom {
+    border-top: 1px solid #333;
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.copyright p {
+    color: #aaa;
+    margin: 5px 0;
+    font-size: 0.9em;
+}
+
+.legal-links a {
+    color: #4CAF50;
+    text-decoration: none;
+    margin: 0 5px;
+}
+
+.legal-links a:hover {
+    text-decoration: underline;
+}
+
+.payment-methods {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.payment-icons {
+    display: flex;
+    gap: 15px;
+    font-size: 1.5em;
+    color: #aaa;
+}
+
+.footer-hops {
+    width: 100%;
+    max-height: 100px;
+    object-fit: cover;
+    opacity: 0.1;
+    margin-bottom: -50px;
+}
+</style>
+
