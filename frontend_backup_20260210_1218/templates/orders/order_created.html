@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Заказ оформлен - Hop & Barley{% endblock %}
+
+{% block content %}
+<div class="order-success" style="text-align: center; padding: 40px 20px;">
+    <h1 style="color: #4CAF50;">🎉 Заказ успешно оформлен!</h1>
+
+    <div style="max-width: 600px; margin: 30px auto; padding: 20px; border: 1px solid #4CAF50; border-radius: 8px; background: #f9fff9;">
+        <h2>Заказ #{{ order.id }}</h2>
+
+        <div style="margin: 20px 0;">
+            <p><strong>Статус:</strong> {{ order.get_status_display }}</p>
+            <p><strong>Сумма:</strong> {{ order.total_price }} руб.</p>
+            <p><strong>Адрес доставки:</strong> {{ order.shipping_address }}</p>
+            <p><strong>Телефон:</strong> {{ order.phone }}</p>
+            <p><strong>Email:</strong> {{ order.email }}</p>
+            <p><strong>Дата создания:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
+        </div>
+
+        <div style="margin: 30px 0;">
+            <p>✅ На указанный email отправлено подтверждение заказа</p>
+            <p>📦 Отслеживать статус заказа можно в личном кабинете</p>
+            <p>📞 С вами свяжется менеджер для уточнения деталей</p>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <a href="{% url 'products:product_list' %}" class="btn btn-primary">
+            Продолжить покупки
+        </a>
+        <a href="/" class="btn btn-secondary">
+            На главную
+        </a>
+    </div>
+</div>
+
+<style>
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 0 10px;
+    }
+    .btn-primary {
+        background: #4CAF50;
+        color: white;
+    }
+    .btn-primary:hover {
+        background: #45a049;
+    }
+    .btn-secondary {
+        background: #ddd;
+        color: #333;
+    }
+    .btn-secondary:hover {
+        background: #ccc;
+    }
+</style>
+{% endblock %}

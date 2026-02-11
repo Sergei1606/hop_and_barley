@@ -1,0 +1,9 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls %}
+
+{% block content %}
+<div id="content-main">
+    <h1>{% if original %}Edit Product{% else %}Add New Product{% endif %}</h1>
+    {{ block.super }}
+</div>
+{% endblock %}

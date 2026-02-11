@@ -1,0 +1,10 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls %}
+
+{% block content %}
+<div id="content-main">
+    <h1>{% if original %}Order #{{ original.id }}{% else %}New Order{% endif %}</h1>
+    <p>Status: {% if original %}{{ original.get_status_display }}{% endif %}</p>
+    {{ block.super }}
+</div>
+{% endblock %}
