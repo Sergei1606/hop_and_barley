@@ -254,101 +254,91 @@
 {% block content %}
 <div class="cart-container">
     <div class="cart-header">
-        <h1 class="cart-title">🛒 аша корзина</h1>
-        <p class="cart-subtitle">роверьте товары перед оформлением заказа</p>
+        <h1 class="cart-title">🛒 Ваша корзина</h1>
+        <p class="cart-subtitle">Проверьте товары перед оформлением заказа</p>
     </div>
 
-    {% if cart_items and cart_items|length > 0 %}
-    <div class="cart-content">
-        <!-- Список товаров -->
-        <div class="cart-items">
-            {% for item in cart_items %}
-            <div class="cart-item" data-product-id="{{ item.product.id }}">
-                <div class="cart-item-image">
-                    <img src="{% static 'img/products/citra_hops.jpg' %}" alt="{{ item.product.name }}">
-                </div>
-                
-                <div class="cart-item-info">
-                    <h4>{{ item.product.name }}</h4>
-                    <p>{{ item.product.description|truncatechars:100 }}</p>
-                    <p>ртикул: {{ item.product.sku }}</p>
-                </div>
-                
-                <div class="cart-item-price">
-                    {{ item.total_price }} 
-                </div>
-                
-                <div class="cart-item-quantity">
-                    <button class="quantity-btn minus" onclick="updateQuantity({{ item.product.id }}, -1)">-</button>
-                    <input type="number" class="quantity-input" value="{{ item.quantity }}" min="1" 
-                           onchange="updateQuantity({{ item.product.id }}, 0, this.value)">
-                    <button class="quantity-btn plus" onclick="updateQuantity({{ item.product.id }}, 1)">+</button>
-                </div>
-                
-                <button class="cart-item-remove" onclick="removeFromCart({{ item.product.id }})">
-                    <i class="fas fa-trash"></i>
-                </button>
+{% if cart and cart|length > 0 %}
+<div class="cart-content">
+    <!-- Список товаров -->
+    <div class="cart-items">
+        {% for item in cart %}
+        <div class="cart-item" data-product-id="{{ item.product.id }}">
+            <div class="cart-item-image">
+                {% if item.product.image %}
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                {% else %}
+                    <img src="{% static 'img/products/beer-placeholder.jpg' %}" alt="{{ item.product.name }}">
+                {% endif %}
             </div>
-            {% endfor %}
+
+            <div class="cart-item-info">
+                <h4>{{ item.product.name }}</h4>
+                <p>{{ item.product.description|truncatechars:100 }}</p>
+            </div>
+
+            <div class="cart-item-price">
+                {{ item.product.price }} ₽
+            </div>
+
+            <div class="cart-item-quantity">
+                <a href="/cart/remove/{{ item.product.id }}/" class="quantity-btn">-</a>
+                <span>{{ item.quantity }}</span>
+                <a href="/cart/add/{{ item.product.id }}/" class="quantity-btn">+</a>
+            </div>
+
+            <div class="cart-item-total">
+                {{ item.total_price }} ₽
+            </div>
+
+            <a href="/cart/remove/{{ item.product.id }}/" class="cart-item-remove" onclick="return confirm('Удалить товар?')">
+                <i class="fas fa-trash"></i>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Итого -->
+    <div class="cart-summary">
+        <h3 class="summary-title">Итого</h3>
+
+        <div class="summary-row">
+            <span>Товары ({{ cart|length }})</span>
+            <span>{{ cart.get_total_price }} ₽</span>
         </div>
 
-        <!-- тоги и оформление -->
-        <div class="cart-summary">
-            <h3 class="summary-title">тоги заказа</h3>
-            
-            <div class="summary-row">
-                <span class="summary-label">Товары ({{ total_items }})</span>
-                <span class="summary-value">{{ subtotal }} </span>
-            </div>
-            
-            <div class="summary-row">
-                <span class="summary-label">оставка</span>
-                <span class="summary-value">{{ shipping_cost }} </span>
-            </div>
-            
-            <div class="summary-row">
-                <span class="summary-label">Скидка</span>
-                <span class="summary-value" style="color: #4CAF50;">-{{ discount }} </span>
-            </div>
-            
-            <div class="summary-row total">
-                <span class="summary-label">того к оплате</span>
-                <span class="summary-value">{{ total_price }} </span>
-            </div>
-            
-            <button class="checkout-btn" onclick="proceedToCheckout()">
-                <i class="fas fa-lock"></i> ерейти к оформлению
-            </button>
-            
-            <div class="cart-actions">
-                <a href="/products/" class="btn-continue">
-                    <i class="fas fa-arrow-left"></i> родолжить покупки
-                </a>
-                <button class="btn-clear" onclick="clearCart()">
-                    <i class="fas fa-broom"></i> чистить корзину
-                </button>
-            </div>
-            
-            <div style="margin-top: 30px; font-size: 0.9em; color: #666; text-align: center;">
-                <p><i class="fas fa-shield-alt"></i> езопасная оплата SSL</p>
-                <p><i class="fas fa-truck"></i> оставка по всей оссии</p>
-                <p><i class="fas fa-undo"></i> озврат в течение 14 дней</p>
-            </div>
+        <div class="summary-row total">
+            <span>К оплате</span>
+            <span>{{ cart.get_total_price }} ₽</span>
         </div>
-    </div>
-    {% else %}
-    <!-- устая корзина -->
-    <div class="empty-cart">
-        <div class="empty-cart-icon">
-            <i class="fas fa-shopping-cart"></i>
-        </div>
-        <h3>аша корзина пуста</h3>
-        <p>охоже, вы ещё не добавили товары в корзину. осмотрите наш каталог и выберите то, что вам понравится!</p>
-        <a href="/products/" class="checkout-btn" style="display: inline-block; width: auto; padding: 15px 40px;">
-            <i class="fas fa-beer"></i> ерейти в магазин
+
+        <a href="/orders/checkout/" class="checkout-btn">
+            <i class="fas fa-lock"></i> Оформить заказ
         </a>
+
+        <div class="cart-actions">
+            <a href="/products/" class="btn-continue">
+                <i class="fas fa-arrow-left"></i> Продолжить покупки
+            </a>
+            <a href="/cart/clear/" class="btn-clear" onclick="return confirm('Очистить корзину?')">
+                <i class="fas fa-broom"></i> Очистить корзину
+            </a>
+        </div>
     </div>
-    {% endif %}
+</div>
+{% else %}
+<!-- Пустая корзина -->
+<div class="empty-cart">
+    <div class="empty-cart-icon">
+        <i class="fas fa-shopping-cart"></i>
+    </div>
+    <h3>Ваша корзина пуста</h3>
+    <p>Добавьте товары в корзину, чтобы оформить заказ</p>
+    <a href="/products/" class="continue-shopping-btn">
+        <i class="fas fa-arrow-left"></i> Продолжить покупки
+    </a>
+</div>
+{% endif %}
 </div>
 {% endblock %}
 
