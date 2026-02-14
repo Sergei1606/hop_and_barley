@@ -17,17 +17,20 @@ def order_create(request):
     cart = Cart(request)
 
     # Проверяем, что корзина не пуста
-    if cart.get_total_items() == 0:
+    if len(cart) == 0:
         messages.error(request, 'Ваша корзина пуста')
         return redirect('cart:cart_detail')
 
     # Проверяем наличие товаров на складе
-    for item in cart.get_items():
-        if item['quantity'] > item['product'].stock:
+    for item in cart:
+        product = item['product']
+        quantity = item['quantity']
+
+        if quantity > product.stock:
             messages.error(
                 request,
-                f'Товара "{item["product"].name}" недостаточно на складе. '
-                f'Доступно: {item["product"].stock} шт.'
+                f'Товара "{product.name}" недостаточно на складе. '
+                f'Доступно: {product.stock} шт.'
             )
             return redirect('cart:cart_detail')
 

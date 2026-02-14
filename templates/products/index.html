@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - Hop & Barley{% endblock %}
+
+{% block content %}
+<div style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;">
+    <!-- Hero Section -->
+    <div style="text-align: center; margin-bottom: 60px;">
+        <h1 style="font-size: 3em; margin-bottom: 20px; color: #2c3e50;">Welcome to Hop & Barley</h1>
+        <p style="font-size: 1.2em; color: #666; max-width: 600px; margin: 0 auto 30px;">
+            Your premium store for craft beer brewing ingredients
+        </p>
+        <a href="/products/" style="display: inline-block; padding: 15px 30px; background: #4CAF50; color: white; text-decoration: none; border-radius: 8px; font-size: 1.1em;">
+            Browse Products ?
+        </a>
+    </div>
+    
+    <!-- Products Grid -->
+    <h2 style="text-align: center; margin-bottom: 40px; color: #333;">Featured Products</h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 60px;">
+        <!-- Product 1 -->
+        <div class="product-card" style="border: 1px solid #eee; border-radius: 10px; padding: 20px; text-align: center; transition: transform 0.3s;">
+            <img src="{% static 'img/products/citra_hops.jpg' %}" alt="Citra Hops" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
+            <h3 style="margin: 0 0 10px; color: #333;">Citra Hops</h3>
+            <p style="color: #666; margin-bottom: 15px; font-size: 0.9em;">Aromatic hops with citrus notes</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 1.3em; font-weight: bold; color: #2c3e50;">$12.99</span>
+                <button class="add-to-cart-btn" data-product="Citra Hops" style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                    Add to Cart
+                </button>
+            </div>
+        </div>
+        
+        <!-- Product 2 -->
+        <div class="product-card" style="border: 1px solid #eee; border-radius: 10px; padding: 20px; text-align: center; transition: transform 0.3s;">
+            <img src="{% static 'img/products/mosaic_hops.jpg' %}" alt="Mosaic Hops" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
+            <h3 style="margin: 0 0 10px; color: #333;">Mosaic Hops</h3>
+            <p style="color: #666; margin-bottom: 15px; font-size: 0.9em;">Exotic fruit flavors</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 1.3em; font-weight: bold; color: #2c3e50;">$14.99</span>
+                <button class="add-to-cart-btn" data-product="Mosaic Hops" style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                    Add to Cart
+                </button>
+            </div>
+        </div>
+        
+        <!-- Product 3 -->
+        <div class="product-card" style="border: 1px solid #eee; border-radius: 10px; padding: 20px; text-align: center; transition: transform 0.3s;">
+            <img src="{% static 'img/products/maris_otter_malt.jpg' %}" alt="Maris Otter Malt" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
+            <h3 style="margin: 0 0 10px; color: #333;">Maris Otter Malt</h3>
+            <p style="color: #666; margin-bottom: 15px; font-size: 0.9em;">English base malt</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 1.3em; font-weight: bold; color: #2c3e50;">$8.99/kg</span>
+                <button class="add-to-cart-btn" data-product="Maris Otter Malt" style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                    Add to Cart
+                </button>
+            </div>
+        </div>
+        
+        <!-- Product 4 -->
+        <div class="product-card" style="border: 1px solid #eee; border-radius: 10px; padding: 20px; text-align: center; transition: transform 0.3s;">
+            <img src="{% static 'img/products/ipa_kit.jpg' %}" alt="IPA Kit" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
+            <h3 style="margin: 0 0 10px; color: #333;">IPA Brewing Kit</h3>
+            <p style="color: #666; margin-bottom: 15px; font-size: 0.9em;">Complete IPA kit</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 1.3em; font-weight: bold; color: #2c3e50;">$49.99</span>
+                <button class="add-to-cart-btn" data-product="IPA Brewing Kit" style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                    Add to Cart
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Test Section -->
+    <div style="background: #f9f9f9; padding: 40px; border-radius: 10px; text-align: center; margin-top: 60px;">
+        <h3 style="margin-bottom: 20px;">?? JavaScript Test</h3>
+        <p style="color: #666; margin-bottom: 25px;">Check browser console (F12) for JavaScript messages</p>
+        <button id="testButton" style="padding: 12px 30px; background: #3498db; color: white; border: none; border-radius: 6px; font-size: 1.1em; cursor: pointer;">
+            Test Button
+        </button>
+    </div>
+</div>
+
+<script>
+// Simple JavaScript for testing
+console.log('? Home page JavaScript loaded');
+
+// Handle Add to Cart buttons
+document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const productName = this.getAttribute('data-product');
+        console.log(`?? Added to cart: ${productName}`);
+        alert(`"${productName}" added to cart!`);
+        
+        // Visual feedback
+        const originalText = this.textContent;
+        this.textContent = 'Added!';
+        this.style.backgroundColor = '#45a049';
+        this.disabled = true;
+        
+        setTimeout(() => {
+            this.textContent = originalText;
+            this.style.backgroundColor = '';
+            this.disabled = false;
+        }, 2000);
+    });
+});
+
+// Handle test button
+document.getElementById('testButton').addEventListener('click', function() {
+    console.log('?? Test button clicked');
+    alert('Test successful! JavaScript is working.');
+});
+
+// Add hover effects to product cards
+document.querySelectorAll('.product-card').forEach(card => {
+    card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-10px)';
+        this.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
+    });
+    
+    card.addEventListener('mouseleave', function() {
+        this.style.transform = '';
+        this.style.boxShadow = '';
+    });
+});
+
+console.log('?? Home page JavaScript initialized');
+</script>
+{% endblock %}
