@@ -9,29 +9,29 @@
     <h1 style="margin-bottom: 30px;">👤 ой профиль</h1>
     
     <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 40px;">
-        <!-- оковая панель -->
+        <!-- Боковая панель -->
         <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
             <div style="text-align: center; margin-bottom: 20px;">
                 <div style="width: 80px; height: 80px; background: #4CAF50; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2em; margin: 0 auto 15px;">
-                    U
+                    {{ user.username|first|upper }}
                 </div>
-                <h3 style="margin-bottom: 5px;">ользователь</h3>
-                <p style="color: #666; font-size: 0.9em;">user@example.com</p>
+                <h3 style="margin-bottom: 5px;">{{ user.username }}</h3>
+                <p style="color: #666; font-size: 0.9em;">{{ user.email }}</p>
             </div>
-            
+
             <div style="margin-top: 20px;">
-                <a href="/orders/" style="display: block; padding: 12px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">
-                    📦 ои заказы
+                <a href="{% url 'users:order_history' %}" style="display: block; padding: 12px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">
+                    📦 Мои заказы
                 </a>
-                <a href="/users/profile/edit/" style="display: block; padding: 12px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">
-                    ⚙️ астройки
+                <a href="{% url 'users:profile' %}" style="display: block; padding: 12px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">
+                    ⚙️ Настройки
                 </a>
-                <a href="/users/logout/" style="display: block; padding: 12px; color: #333; text-decoration: none;">
-                    🚪 ыйти
+                <a href="{% url 'users:logout' %}" style="display: block; padding: 12px; color: #333; text-decoration: none;">
+                    🚪 Выйти
                 </a>
             </div>
         </div>
-        
+
         <!-- сновной контент -->
         <div>
             <h2 style="margin-bottom: 20px;">оследние заказы</h2>

@@ -35,6 +35,7 @@ class Cart:
 
     def save(self):
         """Сохраняет изменения в сессии."""
+        self.session[settings.CART_SESSION_ID] = self.cart
         self.session.modified = True
 
     def __iter__(self):

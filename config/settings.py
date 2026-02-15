@@ -152,6 +152,9 @@ EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = 'noreply@hopbarley.ru'
 ADMIN_EMAIL = 'admin@hopbarley.ru'  # Для уведомлений администратора
+# Сессии
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 1209600  # 2 недели (опционально)
 # Корзина
 CART_SESSION_ID = 'cart'
 # В продакшне использовать:

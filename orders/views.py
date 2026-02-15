@@ -38,16 +38,15 @@ def order_create(request):
         form = OrderCreateForm(request.POST)
         if form.is_valid():
             try:
-                # Начинаем транзакцию
+                # Делаем копию корзины ДО транзакции
+                cart_items = list(cart)
+
                 with transaction.atomic():
-                    # Создаем заказ
                     order = form.save(commit=False)
 
-                    # Если пользователь авторизован, привязываем его
                     if request.user.is_authenticated:
                         order.user = request.user
                     else:
-                        # Для анонимных пользователей создаем или находим пользователя
                         from django.contrib.auth.models import User
                         anonymous_user, created = User.objects.get_or_create(
                             username='anonymous',
@@ -58,27 +57,22 @@ def order_create(request):
                     order.total_price = cart.get_total_price()
                     order.save()
 
-                    # Создаем элементы заказа и обновляем остатки
-                    for item in cart.get_items():
+                    # Используем копию корзины
+                    for item in cart_items:
                         product = item['product']
                         quantity = item['quantity']
 
-                        # Создаем элемент заказа
                         OrderItem.objects.create(
                             order=order,
                             product=product,
                             quantity=quantity,
-                            price=item['price']
+                            price=product.price
                         )
 
-                        # Обновляем остатки товара
                         product.stock -= quantity
                         product.save()
 
-                    # Очищаем корзину
                     cart.clear()
-
-                    # Отправляем email уведомления
                     send_order_emails(order, request)
 
                     messages.success(
@@ -92,6 +86,7 @@ def order_create(request):
             except Exception as e:
                 messages.error(request, f'Ошибка при оформлении заказа: {str(e)}')
                 return redirect('cart:cart_detail')
+
     else:
         # Предзаполняем форму данными
         initial_data = {}
