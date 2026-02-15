@@ -11,18 +11,29 @@ def cart_detail(request):
 
 
 def add_to_cart(request, product_id):
-    """Добавление товара в корзину."""
     cart = Cart(request)
     product = get_object_or_404(Product, id=product_id)
 
     if product.stock > 0:
-        # Добавляем 1 товар в корзину
-        cart.add(product_id, quantity=1)
-        messages.success(request, f'Товар "{product.name}" добавлен в корзину')
+        quantity = 1
+        if request.method == 'POST':
+            try:
+                quantity = int(request.POST.get('quantity', 1))
+            except (ValueError, TypeError):
+                quantity = 1
+
+        if quantity > product.stock:
+            quantity = product.stock
+            messages.warning(request, f'Доступно только {product.stock} шт.')
+
+        # Удаляем текущий и добавляем точное количество
+        cart.remove(product_id)
+        cart.add(product_id, quantity)
+
+        messages.success(request, f'Товар "{product.name}" добавлен в корзину ({quantity} шт.)')
     else:
         messages.error(request, f'Товар "{product.name}" нет в наличии')
 
-    # Возвращаемся на страницу товара
     return redirect('products:product_detail', slug=product.slug)
 
 

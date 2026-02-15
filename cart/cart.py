@@ -14,16 +14,15 @@ class Cart:
         self.cart = cart
 
     def add(self, product_id, quantity=1, update_quantity=False):
-        """Добавляет товар в корзину или обновляет его количество."""
         product_id = str(product_id)
 
-        if product_id not in self.cart:
-            self.cart[product_id] = {'quantity': 0}
-
         if update_quantity:
-            self.cart[product_id]['quantity'] = quantity
+            self.cart[product_id] = {'quantity': quantity}
         else:
-            self.cart[product_id]['quantity'] += quantity
+            if product_id in self.cart:
+                self.cart[product_id]['quantity'] += quantity
+            else:
+                self.cart[product_id] = {'quantity': quantity}
 
         self.save()
 
