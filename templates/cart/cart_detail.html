@@ -344,107 +344,98 @@
 
 {% block extra_js %}
 <script>
-// ункции для работы с корзиной
+// Функции для работы с корзиной
 
-// бновление количества товара
+// Обновление количества товара
 function updateQuantity(productId, change = 0, newValue = null) {
-    let quantityInput = document.querySelector(\.cart-item[data-product-id="\"] .quantity-input\);
+    let quantityInput = document.querySelector(`.cart-item[data-product-id="${productId}"] .quantity-input`);
+
+    if (!quantityInput) {
+        console.error("Элемент не найден");
+        return;
+    }
+
     let currentValue = parseInt(quantityInput.value);
-    
+
     if (newValue !== null) {
         currentValue = parseInt(newValue);
     } else {
         currentValue += change;
     }
-    
-    // роверка минимального значения
+
     if (currentValue < 1) currentValue = 1;
-    
+
     quantityInput.value = currentValue;
-    
-    // десь должен быть AJAX запрос к серверу
-    console.log(\бновление количества товара \: \\);
-    showNotification(\оличество товара обновлено: \ шт.\);
-    
-    // бновляем итоги (в реальном проекте - через AJAX)
+
+    console.log(`Обновление количества товара ${productId}: ${currentValue}`);
+    showNotification(`Количество товара обновлено: ${currentValue} шт.`);
+
     updateCartTotals();
 }
 
-// даление товара из корзины
+// Удаление товара из корзины
 function removeFromCart(productId) {
-    if (confirm('далить товар из корзины?')) {
-        const cartItem = document.querySelector(\.cart-item[data-product-id="\"]\);
+    if (confirm('Удалить товар из корзины?')) {
+        const cartItem = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
         if (cartItem) {
             cartItem.style.opacity = '0.5';
             cartItem.style.transform = 'translateX(-100px)';
-            
+
             setTimeout(() => {
                 cartItem.remove();
-                console.log(\Товар \ удален из корзины\);
+                console.log(`Товар ${productId} удален из корзины`);
                 showNotification('Товар удален из корзины', 'info');
-                
-                // роверяем пуста ли корзина
+
                 if (document.querySelectorAll('.cart-item').length === 0) {
-                    location.reload(); // ерезагружаем для показа пустой корзины
+                    location.reload();
                 } else {
                     updateCartTotals();
                 }
             }, 300);
         }
-        
-        // десь должен быть AJAX запрос к серверу
-        // fetch(\/cart/remove/\/\, { method: 'POST' })
     }
 }
 
-// чистка всей корзины
+// Очистка всей корзины
 function clearCart() {
-    if (confirm('чистить всю корзину? то действие нельзя отменить.')) {
-        // десь должен быть AJAX запрос к серверу
-        console.log('чистка всей корзины');
-        
-        // изуальный эффект
+    if (confirm('Очистить всю корзину? Это действие нельзя отменить.')) {
+        console.log('Очистка всей корзины');
+
         document.querySelectorAll('.cart-item').forEach(item => {
             item.style.transform = 'translateX(-100%)';
             item.style.opacity = '0';
         });
-        
+
         setTimeout(() => {
-            location.reload(); // ерезагружаем страницу
+            location.reload();
         }, 500);
-        
-        showNotification('орзина очищена', 'info');
+
+        showNotification('Корзина очищена', 'info');
     }
 }
 
-// ереход к оформлению заказа
+// Переход к оформлению заказа
 function proceedToCheckout() {
-    console.log('ереход к оформлению заказа');
-    showNotification('ереходим к оформлению заказа...', 'info');
-    
-    // десь будет перенаправление на страницу оформления
+    console.log('Переход к оформлению заказа');
+    showNotification('Переходим к оформлению заказа...', 'info');
+
     setTimeout(() => {
         window.location.href = '/order/checkout/';
     }, 1000);
 }
 
-// бновление итогов корзины (заглушка)
+// Обновление итогов корзины (заглушка)
 function updateCartTotals() {
-    console.log('бновление итогов корзины');
-    //  реальном проекте здесь будет AJAX запрос к серверу
-    // и обновление данных на странице
+    console.log('Обновление итогов корзины');
 }
 
-// нициализация корзины при загрузке
+// Инициализация корзины при загрузке
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Страница корзины загружена');
-    
-    // ктивируем все элементы корзины
+
     document.querySelectorAll('.quantity-btn, .cart-item-remove, .checkout-btn').forEach(el => {
         el.style.cursor = 'pointer';
     });
 });
 </script>
 {% endblock %}
-
-

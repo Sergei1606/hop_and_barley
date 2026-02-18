@@ -27,8 +27,11 @@ def add_to_cart(request, product_id):
             messages.warning(request, f'Доступно только {product.stock} шт.')
 
         # Удаляем текущий и добавляем точное количество
-        cart.remove(product_id)
+        # cart.remove(product_id)
+        print(f"🔥 quantity из формы: {quantity}")
+        print(f"📦 в корзине ДО: {cart.cart}")
         cart.add(product_id, quantity)
+        print(f"📦 в корзине ПОСЛЕ: {cart.cart}")
 
         messages.success(request, f'Товар "{product.name}" добавлен в корзину ({quantity} шт.)')
     else:

@@ -9,7 +9,7 @@ from datetime import timedelta
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings
-SECRET_KEY = 'django-insecure-8ij_x!4uzk*9a6!ie%-(b7axhb*8d-4i%0fxrb6b+=-84a6n(1'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-default-dev-key')
 DEBUG = True
 ALLOWED_HOSTS = []
 
