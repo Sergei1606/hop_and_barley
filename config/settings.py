@@ -9,7 +9,7 @@ from datetime import timedelta
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings
-SECRET_KEY = 'django-insecure-8ij_x!4uzk*9a6!ie%-(b7axhb*8d-4i%0fxrb6b+=-84a6n(1'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-default-dev-key')
 DEBUG = True
 ALLOWED_HOSTS = []
 
@@ -152,7 +152,11 @@ EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = 'noreply@hopbarley.ru'
 ADMIN_EMAIL = 'admin@hopbarley.ru'  # Для уведомлений администратора
-
+# Сессии
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 1209600  # 2 недели (опционально)
+# Корзина
+CART_SESSION_ID = 'cart'
 # В продакшне использовать:
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = 'smtp.gmail.com'

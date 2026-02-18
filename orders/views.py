@@ -1,6 +1,3 @@
-from django.shortcuts import render
-
-# Create your views here.
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -17,34 +14,45 @@ def order_create(request):
     cart = Cart(request)
 
     # Проверяем, что корзина не пуста
-    if cart.get_total_items() == 0:
+    if len(cart) == 0:
         messages.error(request, 'Ваша корзина пуста')
         return redirect('cart:cart_detail')
 
-    # Проверяем наличие товаров на складе
-    for item in cart.get_items():
-        if item['quantity'] > item['product'].stock:
+    # Делаем копию ДО любых операций с корзиной
+    cart_items = []
+    total_price = 0
+
+    for item in cart:
+        product = item['product']
+        quantity = item['quantity']
+
+        # Проверяем наличие
+        if quantity > product.stock:
             messages.error(
                 request,
-                f'Товара "{item["product"].name}" недостаточно на складе. '
-                f'Доступно: {item["product"].stock} шт.'
+                f'Товара "{product.name}" недостаточно на складе. '
+                f'Доступно: {product.stock} шт.'
             )
             return redirect('cart:cart_detail')
+
+        # Сохраняем ТОЛЬКО ID и количество
+        cart_items.append({
+            'product_id': product.id,
+            'quantity': quantity,
+            'price': product.price
+        })
+        total_price += product.price * quantity
 
     if request.method == 'POST':
         form = OrderCreateForm(request.POST)
         if form.is_valid():
             try:
-                # Начинаем транзакцию
                 with transaction.atomic():
-                    # Создаем заказ
                     order = form.save(commit=False)
 
-                    # Если пользователь авторизован, привязываем его
                     if request.user.is_authenticated:
                         order.user = request.user
                     else:
-                        # Для анонимных пользователей создаем или находим пользователя
                         from django.contrib.auth.models import User
                         anonymous_user, created = User.objects.get_or_create(
                             username='anonymous',
@@ -52,45 +60,40 @@ def order_create(request):
                         )
                         order.user = anonymous_user
 
-                    order.total_price = cart.get_total_price()
+                    order.total_price = total_price
                     order.save()
 
-                    # Создаем элементы заказа и обновляем остатки
-                    for item in cart.get_items():
-                        product = item['product']
-                        quantity = item['quantity']
+                    for item_data in cart_items:
+                        product = Product.objects.get(id=item_data['product_id'])
+                        quantity = item_data['quantity']
 
-                        # Создаем элемент заказа
                         OrderItem.objects.create(
                             order=order,
                             product=product,
                             quantity=quantity,
-                            price=item['price']
+                            price=item_data['price']
                         )
 
-                        # Обновляем остатки товара
                         product.stock -= quantity
                         product.save()
 
-                    # Очищаем корзину
-                    cart.clear()
+                # Очищаем корзину
+                cart.clear()
 
-                    # Отправляем email уведомления
-                    send_order_emails(order, request)
+                # Полностью удаляем корзину из сессии
+                if settings.CART_SESSION_ID in request.session:
+                    del request.session[settings.CART_SESSION_ID]
+                request.session.modified = True
 
-                    messages.success(
-                        request,
-                        f'Заказ #{order.id} успешно оформлен! '
-                        f'На сумму {order.total_price} руб.'
-                    )
+                send_order_emails(order, request)
 
-                    return redirect('orders:order_created', order_id=order.id)
+                messages.success(request, f'Заказ #{order.id} успешно оформлен! На сумму {order.total_price} руб.')
+                return redirect('orders:order_created', order_id=order.id)
 
             except Exception as e:
                 messages.error(request, f'Ошибка при оформлении заказа: {str(e)}')
                 return redirect('cart:cart_detail')
     else:
-        # Предзаполняем форму данными
         initial_data = {}
         if request.user.is_authenticated and request.user.email:
             initial_data['email'] = request.user.email
@@ -105,18 +108,15 @@ def order_create(request):
 
 def order_created(request, order_id):
     order = get_object_or_404(Order, id=order_id)
-    # Проверяем, что пользователь видит только свои заказы (если авторизован)
     if request.user.is_authenticated and order.user != request.user and order.user.username != 'anonymous':
         messages.error(request, 'У вас нет доступа к этому заказу')
         return redirect('products:product_list')
-
     return render(request, 'orders/order_created.html', {'order': order})
 
 
 def send_order_emails(order, request):
     """Отправка email уведомлений"""
     try:
-        # 1. Email пользователю
         user_subject = f'Заказ #{order.id} оформлен'
         user_message = f'''
         Здравствуйте, {order.user.username if order.user.username != 'anonymous' else 'клиент'}!
@@ -144,7 +144,6 @@ def send_order_emails(order, request):
             fail_silently=True,
         )
 
-        # 2. Email администратору
         admin_subject = f'Новый заказ #{order.id}'
         admin_message = f'''
         Новый заказ от пользователя {order.user.username} ({order.user.email})
@@ -171,5 +170,4 @@ def send_order_emails(order, request):
         )
 
     except Exception as e:
-        # Логируем ошибку, но не прерываем выполнение
         print(f"Ошибка отправки email: {e}")
